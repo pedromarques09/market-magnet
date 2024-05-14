@@ -1,0 +1,9 @@
+{
+  "items": [],
+  "baseTheme": "material.blue.dark",
+  "outputColorScheme": "custom-scheme",
+  "makeSwatch": true,
+  "version": "23.2.6",
+  "widgets": [],
+  "removeExternalResources": true
+}

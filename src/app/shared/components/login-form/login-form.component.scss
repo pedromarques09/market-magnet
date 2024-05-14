@@ -1,0 +1,28 @@
+@import "../../../../themes/generated/variables.base.scss";
+
+//  background-color: rgba(255, 255, 255, 0.5);
+.login-form {
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+
+  .link {
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  img {
+      width: 200px;
+      height: auto;
+  }
+  
+  ::ng-deep .form-text {
+    margin: 10px 0;
+    color: rgba($base-text-color, alpha($base-text-color) * 0.7);
+  }
+}
