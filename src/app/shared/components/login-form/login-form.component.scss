@@ -17,10 +17,12 @@
   }
 
   img {
-      width: 200px;
+      width: 300px;
       height: auto;
   }
-  
+  input{
+    color: white;
+  }
   ::ng-deep .form-text {
     margin: 10px 0;
     color: rgba($base-text-color, alpha($base-text-color) * 0.7);

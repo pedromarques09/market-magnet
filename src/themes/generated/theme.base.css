@@ -1207,7 +1207,7 @@
   cursor: default;
 }
 .dx-state-disabled .dx-widget .dx-widget,
-.dx-state-disabled.dx-widget .dx-widget {
+.dx-state-disabled.dx-widget .dx-widget { 
   opacity: 1;
 }
 .dx-surface {
@@ -1215,7 +1215,6 @@
 }
 .dx-card {
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);
   border-radius: 4px;
   background-color: #fff;
   margin: 2px 2px 3px;
@@ -3982,6 +3981,7 @@
   align-items: center;
 }
 .dx-texteditor-input-container {
+  color: white;
   display: flex;
   flex-grow: 1;
   position: relative;
@@ -3998,7 +3998,7 @@
   user-select: text;
   margin: 0;
   background-color: transparent;
-  color: rgba(0,0,0,.87);
+  color: white;
   font-size: 16px;
 }
 .dx-texteditor-input:-webkit-autofill + .dx-placeholder {
@@ -4138,6 +4138,7 @@
 .dx-texteditor.dx-editor-outlined .dx-lookup-field,
 .dx-texteditor.dx-editor-outlined .dx-placeholder::before,
 .dx-texteditor.dx-editor-outlined .dx-texteditor-input {
+  color:white;
   padding: 15px 16px 14px;
 }
 .dx-texteditor.dx-editor-filled {
