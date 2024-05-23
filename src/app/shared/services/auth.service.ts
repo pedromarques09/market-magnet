@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 
@@ -14,7 +15,8 @@ const defaultUser = {
 
 @Injectable()
 export class AuthService {
-  private _user: IUser | null = defaultUser;
+  private _user: any = null;
+  private apiUrl = 'http://localhost:5046/api/';
   get loggedIn(): boolean {
     return !!this._user;
   }
@@ -24,50 +26,30 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   async logIn(email: string, password: string) {
-
     try {
-      // Send request
-      this._user = { ...defaultUser, email };
-      this.router.navigate([this._lastAuthenticatedPath]);
-
-      return {
-        isOk: true,
-        data: this._user
-      };
-    }
-    catch {
-      return {
-        isOk: false,
-        message: "Authentication failed"
-      };
+      const response = await this.http.post<any>(this.apiUrl + 'Login', { email, password }).toPromise();
+      this._user = response.user;
+      this.router.navigate(['/home']); // Redireciona para a página adequada após o login
+      return { isOk: true, data: this._user };
+    } catch (error) {
+      return { isOk: false, message: "Email ou Senha invalido" };
     }
   }
+
 
   async getUser() {
-    try {
-      // Send request
-
-      return {
-        isOk: true,
-        data: this._user
-      };
-    }
-    catch {
-      return {
-        isOk: false,
-        data: null
-      };
-    }
+    return { isOk: true, data: this._user };
   }
 
-  async createAccount(email: string, password: string) {
+  async createAccount(name: string, email: string, password: string) {
     try {
+      console.log(name, email, password)
       // Send request
-
-      this.router.navigate(['/create-account']);
+      const response = await this.http.post<any>(this.apiUrl + 'User', { name, email, password }).toPromise();
+      this.router.navigate(['/login-form']);
       return {
         isOk: true
       };
