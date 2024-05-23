@@ -1,11 +1,10 @@
 <form class="login-form" (submit)="onSubmit($event)">
-  <img src="assets/images/logosembg.png" alt="Logo" class="tamanho-imagem">
+  <img src="assets/images/logosembg.png" alt="Logo" class="logo">
   <dx-form [formData]="formData" [disabled]="loading">
 
     <dxi-item dataField="email" editorType="dxTextBox"
-      [editorOptions]="{ stylingMode: 'filled', placeholder: 'Email', mode: 'email' }">
+      [editorOptions]="{ stylingMode: 'filled', placeholder: 'Email', mode: '' }">
       <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
-      <dxi-validation-rule type="email" message="Email is invalid"></dxi-validation-rule>
       <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
 
