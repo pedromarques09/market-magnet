@@ -1,0 +1,57 @@
+<h2 class="content-block">Produtos</h2>
+
+<dx-data-grid class="dx-card wide-card"
+  (onSelectionChanged)="selectedChanged($event)"
+  id="grid"
+  [dataSource]="dataSource"
+  [showBorders]="false"
+  [columnHidingEnabled]="true"
+  (onRowInserted)="onRowInserted($event)"
+  (onRowUpdated)="onRowUpdated($event)"
+  (onRowRemoved)="onRowRemoved($event)"
+ >
+
+  <dxo-selection mode="single"></dxo-selection>
+  <dxo-paging [enabled]="false"></dxo-paging>
+  <dxo-editing mode="popup">
+    <dxo-texts confirmDeleteMessage=""></dxo-texts>
+  </dxo-editing>
+
+  <!-- Definição das colunas -->
+
+  <dxi-column dataField="codigo" caption="Código" [width]="120" [hidingPriority]="8"></dxi-column>
+  <dxi-column dataField="referencias" caption="Referências" [width]="200" [hidingPriority]="7"></dxi-column>
+  <dxi-column dataField="codigosBarras" caption="Códigos de Barras" [width]="150" [hidingPriority]="6"></dxi-column>
+  <dxi-column dataField="descricao" caption="Descrição" [width]="250" [hidingPriority]="5"></dxi-column>
+  <dxi-column dataField="unidadeMedida" caption="Unidade de Medida" [width]="150" [hidingPriority]="4"></dxi-column>
+  <dxi-column dataField="valorCusto" caption="Valor de Custo" dataType="number" [width]="120" [hidingPriority]="3"></dxi-column>
+  <dxi-column dataField="markup" caption="Markup" dataType="number" [width]="90" [hidingPriority]="2"></dxi-column>
+  <dxi-column dataField="valorVenda" caption="Valor de Venda" dataType="number" [width]="120" [hidingPriority]="1"></dxi-column>
+  <dxi-column dataField="quantidadeEstoque" caption="Quantidade em Estoque" dataType="number" [width]="150" [hidingPriority]="0"></dxi-column>
+</dx-data-grid>
+
+<dx-speed-dial-action
+  icon="add"
+  label="Adicionar Produto"
+  [index]="1"
+  (onClick)="addProduct()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="edit"
+  label="Editar Produto"
+  [index]="2"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="editProduct()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="trash"
+  label="Excluir Produto"
+  [index]="3"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="deleteProduct()"
+>
+</dx-speed-dial-action>
