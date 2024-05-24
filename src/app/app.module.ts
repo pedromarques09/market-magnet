@@ -4,14 +4,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SideNavOuterToolbarModule, SideNavInnerToolbarModule, SingleCardModule } from './layouts';
 import { FooterModule, ResetPasswordFormModule, CreateAccountFormModule, ChangePasswordFormModule, LoginFormModule } from './shared/components';
-import { AuthService, ScreenService, AppInfoService } from './shared/services';
+import { AuthService, ScreenService, AppInfoService, ProductService } from './shared/services';
 import { UnauthenticatedContentModule } from './unauthenticated-content';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { CustomersComponent } from './pages/customers/customers.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CustomersComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,8 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     AuthService,
     ScreenService,
-    AppInfoService
+    AppInfoService,
+    ProductService
   ],
   bootstrap: [AppComponent]
 })
