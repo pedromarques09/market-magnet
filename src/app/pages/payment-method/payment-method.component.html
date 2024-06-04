@@ -1,0 +1,47 @@
+<h2 class="content-block">Especie de Pagamento</h2>
+
+<dx-data-grid class="dx-card wide-card"
+  (onSelectionChanged)="selectedChanged($event)"
+  id="grid"
+  [dataSource]="dataSource"
+  [showBorders]="false"
+  [columnHidingEnabled]="true"
+  (onRowInserted)="onRowInserted($event)"
+  (onRowUpdated)="onRowUpdated($event)"
+  (onRowRemoved)="onRowRemoved($event)"
+ >
+ <dxo-selection mode="single"></dxo-selection>
+ <dxo-paging [enabled]="false"></dxo-paging>
+ <dxo-editing mode="popup">
+   <dxo-texts confirmDeleteMessage=""></dxo-texts>
+ </dxo-editing>
+
+  <dxi-column dataField="descricao" caption="Descrição"></dxi-column>
+
+</dx-data-grid>
+
+<dx-speed-dial-action
+  icon="add"
+  label="Adicionar Especie de Pagamento"
+  [index]="1"
+  (onClick)="addMethod()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="edit"
+  label="Editar Especie de Pagamento"
+  [index]="2"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="editMethod()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="trash"
+  label="Excluir Especie de Pagamento"
+  [index]="3"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="deleteMethod()"
+>
+</dx-speed-dial-action>
