@@ -1,0 +1,360 @@
+<h2 class="content-block">Cadastro de Venda</h2>
+<form (submit)="onSubmit()">
+  <dx-form [formData]="sale">
+    <dxi-item
+      [editorOptions]="{
+        readOnly: true,
+        stylingMode: 'filled',
+        color: 'white'
+      }"
+      dataField="codigo"
+      editorType="dxTextBox"
+    >
+      <dxo-label text="Código"></dxo-label>
+    </dxi-item>
+    <dxi-item
+      [editorOptions]="{ readOnly: true, displayFormat: 'dd/MM/yyyy' }"
+      dataField="dataEmissao"
+      editorType="dxDateBox"
+    >
+      <dxo-label text="Data de Emissão"></dxo-label>
+    </dxi-item>
+    <dxi-item
+      [editorOptions]="{ readOnly: true }"
+      dataField="status"
+      editorType="dxTextBox"
+    >
+      <dxo-label text="Status"></dxo-label>
+    </dxi-item>
+    <dxi-item
+      dataField="titulo"
+      [disabled]="isFinancialGenerated"
+      editorType="dxTextBox"
+      [disabled]="isFinancialGenerated"
+    >
+      <dxo-label text="Título"></dxo-label>
+      <dxi-validation-rule
+        type="required"
+        message="Título é obrigatório"
+      ></dxi-validation-rule>
+    </dxi-item>
+    <dxi-item
+      dataField="dadosAdicionais"
+      [disabled]="isFinancialGenerated"
+      editorType="dxTextBox"
+    >
+      <dxo-label text="Dados Adicionais"></dxo-label>
+    </dxi-item>
+    <dxi-item
+      [editorOptions]="{
+        items: clientes,
+        displayExpr: 'nomeRazaoSocial',
+        valueExpr: '_id',
+        placeholder: 'Selecione'
+      }"
+      dataField="idCliente"
+      [disabled]="isFinancialGenerated"
+      editorType="dxSelectBox"
+    >
+      <dxo-label text="Cliente"></dxo-label>
+      <dxi-validation-rule
+        type="required"
+        message="Cliente é obrigatório"
+      ></dxi-validation-rule>
+    </dxi-item>
+    <dxi-item *ngIf="!isFinancialGenerated">
+      <h1 class="data-grid-title">Lista de Produtos</h1>
+      <dx-data-grid
+        onToolbarPreparing="Produtos"
+        id="productGrid"
+        [dataSource]="products"
+        [searchPanel]="{ visible: true }"
+        [paging]="{ pageSize: 10 }"
+        [selection]="{ mode: 'single' }"
+        (onSelectionChanged)="onSelectionChanged($event)"
+      >
+        <dxi-column dataField="codigo" caption="Código"></dxi-column>
+        <dxi-column dataField="referencias" caption="Referencia"></dxi-column>
+        <dxi-column
+          dataField="codigosBarras"
+          caption="Código de Barras"
+        ></dxi-column>
+        <dxi-column dataField="descricao" caption="Descrição"></dxi-column>
+        <dxi-column
+          dataField="quantidadeEstoque"
+          caption="Quantidade em Estoque"
+        ></dxi-column>
+        <dxi-column
+          dataField="unidadeMedida"
+          caption="Unidade de Medida"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorVenda"
+          caption="Valor Unitário"
+        ></dxi-column>
+      </dx-data-grid>
+    </dxi-item>
+
+    <dxi-item *ngIf="!isFinancialGenerated">
+      <h1 class="data-grid-title">Lista de Compras</h1>
+      <dx-data-grid
+        id="selectedProductGrid"
+        [dataSource]="selectedProducts"
+        [editing]="{
+          mode: 'cell',
+          allowUpdating: true,
+          allowDeleting: true,
+          texts: {
+            confirmDeleteMessage: 'Deseja realmente excluir o produto? ',
+          }
+        }"
+        (onRowUpdated)="updateProduct($event)"
+        [showBorders]="true"
+        noDataText="Selecione um produto na lista acima"
+      >
+        <dxi-column
+          dataField="descricao"
+          caption="Descrição"
+          [allowEditing]="false"
+        ></dxi-column>
+        <dxi-column
+          dataField="quantidade"
+          caption="Quantidade"
+          dataType="number"
+          [editorOptions]="{ min: 1 }"
+        ></dxi-column>
+        <dxi-column
+          dataField="unidadeMedida"
+          caption="Unidade de Medida"
+          [allowEditing]="false"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorUnitario"
+          caption="Valor Unitário"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorDesconto"
+          caption="Desconto"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorFrete"
+          caption="Frete"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorOutrasDespesas"
+          caption="Outras Despesas"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorTotal"
+          caption="Valor Total"
+          dataType="number"
+          [allowEditing]="false"
+        ></dxi-column>
+        <dxi-column
+          dataField="quantidadeEstoque"
+          caption="Estoque"
+          dataType="number"
+          [allowEditing]="false"
+        ></dxi-column>
+      </dx-data-grid>
+    </dxi-item>
+
+    <dxi-item *ngIf="isFinancialGenerated">
+      <h1 class="data-grid-title">Lista de Compras</h1>
+      <dx-data-grid
+        id="selectedProductGrid"
+        [dataSource]="selectedProducts"
+        [showBorders]="true"
+      >
+        <dxi-column dataField="descricao" caption="Descrição"></dxi-column>
+        <dxi-column
+          dataField="quantidade"
+          caption="Quantidade"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="unidadeMedida"
+          caption="Unidade de Medida"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorUnitario"
+          caption="Valor Unitário"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorDesconto"
+          caption="Desconto"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorFrete"
+          caption="Frete"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorOutrasDespesas"
+          caption="Outras Despesas"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="valorTotal"
+          caption="Valor Total"
+          dataType="number"
+        ></dxi-column>
+        <dxi-column
+          dataField="quantidadeEstoque"
+          caption="Estoque"
+          dataType="number"
+        ></dxi-column>
+      </dx-data-grid>
+    </dxi-item>
+    <dxi-item
+      [editorOptions]="{ onValueChanged: calculateTotal() }"
+      type="number"
+      dataField="valorOutrasDespesas"
+      [disabled]="isFinancialGenerated"
+      editorType="dxTextBox"
+    >
+      <dxo-label text="Valor Outras Despesas"></dxo-label>
+      <dxi-validation-rule
+        type="required"
+        message="Valor de Outras Despesas é obrigatório"
+      ></dxi-validation-rule>
+      <dxi-validation-rule
+        type="numeric"
+        message="Valor de Outras Despesas tem que ser um número"
+      ></dxi-validation-rule>
+    </dxi-item>
+
+    <dxi-item
+      [editorOptions]="{ onValueChanged: calculateTotal() }"
+      type="number"
+      dataField="valorFrete"
+      [disabled]="isFinancialGenerated"
+      editorType="dxTextBox"
+    >
+      <dxo-label text="Valor Frete"></dxo-label>
+      <dxi-validation-rule
+        type="required"
+        message="Valor do Frete é obrigatório"
+      ></dxi-validation-rule>
+      <dxi-validation-rule
+        type="numeric"
+        message="Valor do Frete tem que ser um número"
+      ></dxi-validation-rule>
+    </dxi-item>
+
+    <dxi-item
+      [editorOptions]="{ onValueChanged: calculateTotal() }"
+      type="number"
+      dataField="valorDesconto"
+      [disabled]="isFinancialGenerated"
+      editorType="dxTextBox"
+    >
+      <dxo-label text="Valor Desconto"></dxo-label>
+      <dxi-validation-rule
+        type="required"
+        message="Valor do Desconto é obrigatório"
+      ></dxi-validation-rule>
+      <dxi-validation-rule
+        type="numeric"
+        message="Valor do Desconto tem que ser um número"
+      ></dxi-validation-rule>
+    </dxi-item>
+    <dxi-item
+      [editorOptions]="{ readOnly: true }"
+      type="number"
+      dataField="valorTotal"
+      editorType="dxTextBox"
+    >
+      <dxo-label text="Valor Total da Venda"></dxo-label>
+      <dxi-validation-rule
+        type="custom"
+        [validationCallback]="confirmTotalValue"
+        message="Valor total tem que ser diferente de 0"
+      ></dxi-validation-rule>
+    </dxi-item>
+
+    <dxi-item
+      [editorOptions]="{
+        items: especies,
+        displayExpr: 'descricao',
+        valueExpr: '_id',
+        placeholder: 'Selecione'
+      }"
+      dataField="idEspecie"
+      editorType="dxSelectBox"
+      [disabled]="isFinancialGenerated"
+    >
+      <dxo-label text="Espécie"></dxo-label>
+      <dxi-validation-rule
+        type="required"
+        message="Espécie é obrigatória"
+      ></dxi-validation-rule>
+    </dxi-item>
+
+    <dxi-item
+      [editorOptions]="{
+        items: condicoes,
+        displayExpr: 'descricao',
+        valueExpr: '_id',
+        placeholder: 'Selecione'
+      }"
+      dataField="idCondicao"
+      editorType="dxSelectBox"
+      [disabled]="isFinancialGenerated"
+    >
+      <dxo-label text="Condição de Pagamento"></dxo-label>
+      <dxi-validation-rule
+        type="required"
+        message="Condição de Pagamento é obrigatória"
+      ></dxi-validation-rule>
+    </dxi-item>
+
+    <dxi-item *ngIf="isFinancialGenerated" class="dx-field">
+      <label>Financeiro Gerado:</label>
+      <div *ngFor="let parcela of sale.parcelas">
+        <span>
+          <i class="dx-icon-money"></i> Parcela {{ parcela.numeroParcela }}:
+          R$:{{ parcela.valorParcela }} --- Data de vencimento:
+          {{ parcela.dataVencimento }}</span
+        >
+      </div>
+    </dxi-item>
+    <dxi-item itemType="button">
+      <dxo-button-options
+        [disabled]="closedSale"
+        position="left"
+        icon="money"
+        type="{{ isFinancialGenerated ? 'danger' : 'success' }}"
+        text="{{
+          isFinancialGenerated ? 'Excluir Financeiro' : 'Gerar Financeiro'
+        }}"
+        [useSubmitBehavior]="true"
+      >
+      </dxo-button-options>
+    </dxi-item>
+    <dxi-item itemType="button">
+      <dxo-button-options
+        [onClick]="finalizeSale"
+        width="100%"
+        type="default"
+        text="{{ closedSale ? 'Reabrir Venda' : 'Salvar e Finalizar' }}"
+      >
+      </dxo-button-options>
+    </dxi-item>
+    <dxi-item itemType="button">
+      <dxo-button-options
+        [onClick]="cancel"
+        width="100%"
+        type="danger"
+        [template]="'Cancelar'"
+      >
+      </dxo-button-options>
+    </dxi-item>
+  </dx-form>
+</form>

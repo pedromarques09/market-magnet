@@ -1,0 +1,41 @@
+<h2 class="content-block">VENDAS</h2>
+
+<dx-data-grid
+  onToolbarPreparing="Produtos"
+  id="salesGrid"
+  [dataSource]="sales"
+  [searchPanel]="{ visible: true }"
+  [editing]="{
+    allowDeleting: true
+  }"
+  (onRowRemoved)="onRowRemoved($event)"
+  [selection]="{ mode: 'single' }"
+  (onSelectionChanged)="onSelectionChanged($event)"
+>
+  <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+  <dxo-paging [pageSize]="10"> </dxo-paging>
+  <dxo-pager [visible]="true" [showPageSizeSelector]="true"> </dxo-pager>
+  <dxi-column dataField="codigo" caption="Código"></dxi-column>
+  <dxi-column dataField="idCliente" caption="Cliente"></dxi-column>
+  <dxi-column
+    format="dd/MM/yyyy"
+    dataField="dataEmissao"
+    caption="Data de Emissão"
+    dataType="date"
+  ></dxi-column>
+  <dxi-column dataField="status" caption="Status"></dxi-column>
+  <dxi-column dataField="titulo" caption="Título"></dxi-column>
+  <dxi-column
+    dataField="valorTotal"
+    caption="Valor Total"
+    dataType="number"
+  ></dxi-column>
+</dx-data-grid>
+
+<dx-speed-dial-action
+  icon="add"
+  label="Adicionar Venda"
+  [index]="1"
+  (onClick)="addSale()"
+>
+</dx-speed-dial-action>

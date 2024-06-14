@@ -15,7 +15,8 @@
 
     ::ng-deep .dx-treeview {
       // ## Long text positioning
-      white-space: nowrap;
+      white-space: normal;
+      width: 100%;
       // ##
 
       // ## Icon width customization

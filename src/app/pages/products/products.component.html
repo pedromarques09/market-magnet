@@ -1,0 +1,154 @@
+<h2 class="content-block">PRODUTOS</h2>
+
+<dx-data-grid
+  class="dx-card wide-card"
+  [searchPanel]="{ visible: true }"
+  (onSelectionChanged)="selectedChanged($event)"
+  id="grid"
+  [dataSource]="dataSource"
+  [showBorders]="false"
+  (onRowInserted)="onRowInserted($event)"
+  (onRowUpdated)="onRowUpdated($event)"
+  (onRowRemoved)="onRowRemoved($event)"
+>
+  <dxo-selection mode="single"></dxo-selection>
+  <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+  <dxo-paging [pageSize]="10"> </dxo-paging>
+  <dxo-pager [visible]="true" [showPageSizeSelector]="true"> </dxo-pager>
+  <dxo-editing mode="popup">
+    <dxo-form>
+      <dxi-item [visible]="false" dataField="codigo"></dxi-item>
+      <dxi-item dataField="referencias">
+        <dxi-validation-rule
+          type="required"
+          message="Referência é obrigatória"
+        ></dxi-validation-rule>
+        <dxo-label text="Referências"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="codigosBarras">
+        <dxi-validation-rule
+          type="required"
+          message="Código de Barras é obrigatório"
+        ></dxi-validation-rule>
+        <dxo-label text="Códigos de Barras"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="descricao">
+        <dxi-validation-rule
+          type="required"
+          message="Descrição é obrigatória"
+        ></dxi-validation-rule>
+        <dxo-label text="Descrição"></dxo-label>
+      </dxi-item>
+      <dxi-item
+        dataField="unidadeMedida"
+        editorType="dxSelectBox"
+        [editorOptions]="{
+          items: unidadeMedidaDataSource,
+          displayExpr: 'descricao',
+          valueExpr: 'descricao',
+          placeholder: 'Selecione'
+        }"
+      >
+        <dxi-validation-rule
+          type="required"
+          message="Unidade de Medida é obrigatória"
+        ></dxi-validation-rule>
+        <dxo-label text="Unidade de Medida"></dxo-label>
+      </dxi-item>
+      <dxi-item
+        dataField="valorCusto"
+        [editorOptions]="{
+          format: 'R$ #,##0.00',
+      }"
+      >
+        <dxi-validation-rule
+          type="required"
+          message="Valor de Custo é obrigatório"
+        ></dxi-validation-rule>
+        <dxo-label text="Valor de Custo"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="markup">
+        <dxi-validation-rule
+          type="required"
+          message="Markup é obrigatório"
+        ></dxi-validation-rule>
+        <dxi-validation-rule
+          type="numeric"
+          message="Somente números"
+        ></dxi-validation-rule>
+        <dxo-label text="Markup em %"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="valorVenda" [visible]="false"></dxi-item>
+      <dxi-item dataField="quantidadeEstoque">
+        <dxi-validation-rule
+          type="required"
+          message="Quantidade em Estoque é obrigatória"
+        ></dxi-validation-rule>
+        <dxi-validation-rule
+          type="numeric"
+          message="Somente números"
+        ></dxi-validation-rule>
+        <dxo-label text="Quantidade em Estoque"></dxo-label>
+      </dxi-item>
+    </dxo-form>
+  </dxo-editing>
+
+  <dxi-column dataField="codigo" caption="Código"></dxi-column>
+  <dxi-column dataField="referencias" caption="Referências"></dxi-column>
+  <dxi-column
+    dataField="codigosBarras"
+    caption="Códigos de Barras"
+  ></dxi-column>
+  <dxi-column dataField="descricao" caption="Descrição"></dxi-column>
+  <dxi-column
+    dataField="unidadeMedida"
+    caption="Unidade de Medida"
+  ></dxi-column>
+  <dxi-column
+    dataField="valorCusto"
+    caption="Valor de Custo"
+    format="R$ #,##0.00"
+  ></dxi-column>
+  <dxi-column
+    dataField="markup"
+    caption="Markup (%)"
+    dataType="number"
+  ></dxi-column>
+  <dxi-column
+    dataField="valorVenda"
+    caption="Valor de Venda"
+    format="R$ #,##0.00"
+    dataType="number"
+  ></dxi-column>
+  <dxi-column
+    dataField="quantidadeEstoque"
+    caption="Estoque"
+    dataType="number"
+  ></dxi-column>
+</dx-data-grid>
+
+<dx-speed-dial-action
+  icon="add"
+  label="Adicionar Produto"
+  [index]="1"
+  (onClick)="addProduct()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="edit"
+  label="Editar Produto"
+  [index]="2"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="editProduct()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="trash"
+  label="Excluir Produto"
+  [index]="3"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="deleteProduct()"
+>
+</dx-speed-dial-action>

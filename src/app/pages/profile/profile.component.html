@@ -1,17 +1,74 @@
-<h2 class="content-block">Profile</h2>
-
+<h2 class="content-block">PERFIL</h2>
 <div class="content-block dx-card responsive-paddings">
-  <div class="form-avatar">
-    <img src="https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/{{employee.Picture}}"/>
-  </div>
-  <span>{{employee.Notes}}</span>
-</div>
+  <form (submit)="onSubmit($event)">
+    <dx-form [formData]="user" id="form">
+      <dxi-item itemType="group" caption="Informações do Usuario">
+        <dxi-item dataField="name">
+          <dxi-validation-rule
+            type="required"
+            message="Nome é obrigatório"
+          ></dxi-validation-rule>
+          <dxo-label text="Nome"></dxo-label>
+        </dxi-item>
+        <dxi-item
+          dataField="email"
+          [editorOptions]="{
+            readOnly: true
+          }"
+        ></dxi-item>
 
-<div class="content-block dx-card responsive-paddings">
-  <dx-form id="form"
-    [formData]="employee"
-    labelLocation="top"
-    [colCountByScreen]="colCountByScreen"
-  >
-  </dx-form>
+        <dxi-item
+          *ngIf="editPassword"
+          name="password"
+          dataField="password"
+          [editorOptions]="passwordEditorOptions"
+        >
+          <dxi-validation-rule
+            type="required"
+            message="Senha é obrigatória"
+          ></dxi-validation-rule>
+          <dxo-label text="Senha"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          *ngIf="editPassword"
+          dataField="confirmPassword"
+          name="confirmPassword"
+          [editorOptions]="confirmPasswordEditorOptions"
+        >
+          <dxi-validation-rule
+            type="required"
+            message="Confirmação da Senha é obrigatória"
+          >
+          </dxi-validation-rule>
+          <dxi-validation-rule
+            type="custom"
+            message="Passwords do not match"
+            [validationCallback]="confirmPassword"
+          ></dxi-validation-rule>
+          <dxo-label text="Confirmação da Senha"></dxo-label>
+        </dxi-item>
+
+        <dxi-item itemType="button">
+          <dxo-button-options
+            width="100%"
+            type="default"
+            [onClick]="changePassword"
+            text="{{ editPassword ? 'Cancelar' : 'Alterar senha' }}"
+          >
+          </dxo-button-options>
+        </dxi-item>
+
+        <dxi-item itemType="button">
+          <dxo-button-options
+            width="100%"
+            type="default"
+            [useSubmitBehavior]="true"
+            text="Atualizar dados"
+          >
+          </dxo-button-options>
+        </dxi-item>
+      </dxi-item>
+    </dx-form>
+  </form>
 </div>

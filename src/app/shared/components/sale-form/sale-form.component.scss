@@ -1,0 +1,30 @@
+form {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #363640;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  color: #f1f1f1;
+
+  .data-grid-title {
+    font-size: 1.5rem;
+    color: white;
+    text-align: center;
+    font-weight: lighter;
+  }
+
+  .dx-field {
+    margin-bottom: 10px;
+    color: white;
+    font-size: large;
+    width: 100%;
+    i {
+      font-size: large;
+    }
+    label {
+      font-size: larger;
+      font-weight: bold;
+    }
+  }
+}

@@ -1,6 +1,5 @@
 @import "../../../../themes/generated/variables.base.scss";
 
-//  background-color: rgba(255, 255, 255, 0.5);
 .login-form {
   flex-direction: column;
   display: flex;
@@ -16,11 +15,13 @@
     }
   }
 
-  img {
-      width: 200px;
+  .logo {
+      width: 300px;
       height: auto;
   }
-  
+  input{
+    color: white;
+  }
   ::ng-deep .form-text {
     margin: 10px 0;
     color: rgba($base-text-color, alpha($base-text-color) * 0.7);

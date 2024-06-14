@@ -1,0 +1,167 @@
+<h2 class="content-block">CLIENTES</h2>
+<dx-data-grid
+  class="dx-card wide-card"
+  [searchPanel]="{ visible: true }"
+  (onSelectionChanged)="selectedChanged($event)"
+  id="grid"
+  [dataSource]="dataSource"
+  [showBorders]="false"
+  (onRowInserted)="onRowInserted($event)"
+  (onRowUpdated)="onRowUpdated($event)"
+  (onRowRemoved)="onRowRemoved($event)"
+>
+  <dxo-selection mode="single"></dxo-selection>
+  <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+  <dxo-paging [pageSize]="10"> </dxo-paging>
+  <dxo-pager [visible]="true" [showPageSizeSelector]="true"> </dxo-pager>
+  <dxo-editing mode="popup">
+    <dxo-form>
+      <dxi-item dataField="cpfCnpj">
+        <dxi-validation-rule
+          type="custom"
+          [validationCallback]="controlCpfCnpj"
+          message="CPF/CNPJ deve conter 11 ou 14 digitos"
+        ></dxi-validation-rule>
+        <dxi-validation-rule
+          type="required"
+          message="CPF/CNPJ é obrigatório"
+        ></dxi-validation-rule>
+        <dxi-validation-rule
+          type="numeric"
+          message="Somente numeros"
+        ></dxi-validation-rule>
+        <dxo-label text="CPF/CNPJ"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="rgIe">
+        <dxi-validation-rule
+          type="required"
+          message="RG/IE é obrigatório"
+        ></dxi-validation-rule>
+        <dxi-validation-rule
+          type="numeric"
+          message="Somente numeros"
+        ></dxi-validation-rule>
+        <dxo-label text="RG/IE"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="nomeRazaoSocial">
+        <dxo-label text="Razão Social"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="apelidoNomeFantasia">
+        <dxi-validation-rule
+          type="required"
+          message="o Nome Fantasia é obrigatório"
+        ></dxi-validation-rule>
+        <dxo-label text="Nome Fantasia"></dxo-label>
+      </dxi-item>
+      <dxi-item
+        [editorOptions]="{
+          items: tipoPessoaDataSource,
+          displayExpr: 'descricao',
+          valueExpr: 'descricao',
+          placeholder: 'Selecione'
+        }"
+        dataField="tipoPessoa"
+        editorType="dxSelectBox"
+      >
+        <dxi-validation-rule
+          type="required"
+          message="Tipo Pessoa é obrigatório"
+        ></dxi-validation-rule>
+        <dxo-label text="Tipo Pessoa"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="endereco.cep">
+        <dxi-validation-rule
+          type="numeric"
+          message="Somente numeros"
+        ></dxi-validation-rule>
+
+        <dxo-label text="CEP"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="endereco.logradouro">
+        <dxo-label text="Logradouro"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="endereco.numero">
+        <dxi-validation-rule
+          type="numeric"
+          message="Somente numeros"
+        ></dxi-validation-rule>
+        <dxo-label text="Número da Casa"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="endereco.pontoReferencia">
+        <dxo-label text="Ponto de Referência"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="endereco.bairro">
+        <dxo-label text="Bairro"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="endereco.cidade">
+        <dxo-label text="Cidade"></dxo-label>
+      </dxi-item>
+    </dxo-form>
+  </dxo-editing>
+
+  <dxi-column dataField="codigo" caption="Código"></dxi-column>
+  <dxi-column dataField="nomeRazaoSocial" caption="Razão Social"></dxi-column>
+  <dxi-column [visible]="false" dataField="rgIe" caption="RG/IE"></dxi-column>
+  <dxi-column
+    dataField="apelidoNomeFantasia"
+    caption="Nome Fantasia"
+  ></dxi-column>
+  <dxi-column dataField="cpfCnpj" caption="CPF/CNPJ"></dxi-column>
+  <dxi-column dataField="tipoPessoa" caption="Tipo Pessoa"></dxi-column>
+  <dxi-column
+    dataField="endereco.cep"
+    caption="CEP"
+    [visible]="false"
+  ></dxi-column>
+  <dxi-column
+    dataField="endereco.logradouro"
+    caption="Logradouro"
+    [visible]="false"
+  ></dxi-column>
+  <dxi-column
+    dataField="endereco.numero"
+    caption="Número"
+    [visible]="false"
+  ></dxi-column>
+  <dxi-column
+    dataField="endereco.pontoReferencia"
+    caption="Ponto de Referência"
+    [visible]="false"
+  ></dxi-column>
+  <dxi-column
+    dataField="endereco.bairro"
+    caption="Bairro"
+    [visible]="false"
+  ></dxi-column>
+  <dxi-column
+    dataField="endereco.cidade"
+    caption="Cidade"
+    [visible]="false"
+  ></dxi-column>
+</dx-data-grid>
+
+<dx-speed-dial-action
+  icon="add"
+  label="Adicionar Cliente"
+  [index]="1"
+  (onClick)="addCustomer()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="edit"
+  label="Editar Cliente"
+  [index]="2"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="editCustomer()"
+>
+</dx-speed-dial-action>
+
+<dx-speed-dial-action
+  icon="trash"
+  label="Excluir Cliente"
+  [index]="3"
+  [visible]="selectedRowIndex !== -1"
+  (onClick)="deleteCustomer()"
+>
+</dx-speed-dial-action>

@@ -1,6 +1,13 @@
 @import "../../../../themes/generated/variables.base.scss";
 
 .create-account-form {
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  .logo {
+    width: 300px;
+    height: auto;
+}
   .policy-info {
     margin: 10px 0;
     color: rgba($base-text-color, alpha($base-text-color) * 0.7);

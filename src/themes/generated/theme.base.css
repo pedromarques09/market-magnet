@@ -1168,7 +1168,7 @@
   outline: 0;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
-  color: rgba(0,0,0,.87);
+  color: white;
   font-weight: 400;
   font-size: 14px;
   font-family: Roboto,RobotoFallback,"Noto Kufi Arabic",Helvetica,Arial,sans-serif;
@@ -1182,6 +1182,7 @@
 .dx-widget::before {
   box-sizing: border-box;
 }
+
 .dx-item {
   outline: 0;
 }
@@ -1207,7 +1208,7 @@
   cursor: default;
 }
 .dx-state-disabled .dx-widget .dx-widget,
-.dx-state-disabled.dx-widget .dx-widget {
+.dx-state-disabled.dx-widget .dx-widget { 
   opacity: 1;
 }
 .dx-surface {
@@ -1215,9 +1216,7 @@
 }
 .dx-card {
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);
   border-radius: 4px;
-  background-color: #fff;
   margin: 2px 2px 3px;
 }
 .dx-fieldset .dx-field-value {
@@ -3249,6 +3248,7 @@
   height: 100%;
 }
 .dx-tabs-scrollable .dx-scrollable-content {
+  background-color: #363640;
   height: 100%;
 }
 .dx-tabs-wrapper {
@@ -3982,10 +3982,16 @@
   align-items: center;
 }
 .dx-texteditor-input-container {
+  color: white;
   display: flex;
   flex-grow: 1;
   position: relative;
   align-items: baseline;
+  
+  input{
+    color: white;
+  
+  }
 }
 .dx-texteditor-input {
   -webkit-appearance: none;
@@ -3998,7 +4004,7 @@
   user-select: text;
   margin: 0;
   background-color: transparent;
-  color: rgba(0,0,0,.87);
+  color: white;
   font-size: 16px;
 }
 .dx-texteditor-input:-webkit-autofill + .dx-placeholder {
@@ -4138,6 +4144,7 @@
 .dx-texteditor.dx-editor-outlined .dx-lookup-field,
 .dx-texteditor.dx-editor-outlined .dx-placeholder::before,
 .dx-texteditor.dx-editor-outlined .dx-texteditor-input {
+  color:white;
   padding: 15px 16px 14px;
 }
 .dx-texteditor.dx-editor-filled {
@@ -5006,6 +5013,7 @@
   flex-grow: 1;
 }
 .dx-dropdowneditor-active .dx-dropdowneditor-icon {
+
   opacity: .35;
 }
 .dx-dropdowneditor-button {
@@ -5031,7 +5039,7 @@
 .dx-dropdowneditor-icon {
   background-position: center;
   background-repeat: no-repeat;
-  color: rgba(0,0,0,.54);
+  color: white(0,0,0,.54);
   font: 24px/24px DXIcons;
   width: 24px;
   height: 100%;
@@ -5604,6 +5612,7 @@
   border-bottom: none;
 }
 .dx-list-item-content {
+  color: white;
   font-size: 16px;
   padding: 14px 16px 13px;
 }
@@ -10104,6 +10113,7 @@
   user-select: none;
   -webkit-touch-callout: none;
   padding: 13px 16px;
+  background-color: #363640;
 }
 .dx-pager .dx-pages {
   white-space: nowrap;
@@ -10764,6 +10774,7 @@
   width: 100%;
 }
 .dx-datagrid-header-panel {
+  background-color: #363640;
   text-align: left;
 }
 .dx-datagrid-header-panel .dx-toolbar-menu-container .dx-button {
@@ -18617,7 +18628,8 @@ input.dx-hidden {
   padding-right: 0;
 }
 .dx-field-item-label-text {
-  color: rgba(0,0,0,.6);
+  color: white;
+  font-weight: 500;
 }
 .dx-field-item-help-text {
   white-space: normal;
@@ -21656,4 +21668,48 @@ input.dx-hidden {
   left: 0;
   background: rgba(0,0,0,.01);
   opacity: .01;
+}
+.dx-texteditor.dx-editor-filled.dx-state-disabled .dx-texteditor-input, .dx-texteditor.dx-editor-filled.dx-state-readonly .dx-texteditor-input, .dx-texteditor.dx-editor-filled.dx-state-readonly.dx-state-hover .dx-texteditor-input {
+  color: white;
+}
+.dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused) > td, .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused) > tr > td, .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):hover > td, .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):hover > tr > td{
+  background-color: dimgray;
+  color: white;
+}
+
+
+.dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort, .dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort-indicator, .dx-datagrid-headers .dx-datagrid-table .dx-row>td:hover .dx-datagrid-text-content {
+  background-color: #363640;
+  color:white;
+}
+.dx-datagrid-rowsview .dx-datagrid-content:not(.dx-datagrid-content-fixed) {
+  color:white;
+  background-color: #363640;
+}
+.dx-datagrid-headers .dx-datagrid-table .dx-row > td:hover:not(.dx-command-select):not(.dx-command-expand):not(.dx-editor-cell):not(.dx-command-edit):not(.dx-datagrid-group-space) {
+  color:white;
+  background-color: #363640;
+}
+.dx-datagrid-nodata {
+  color:white;
+}
+.dx-searchbox .dx-icon-search::before {
+  color:white;
+}
+.dx-popup-bottom.dx-toolbar{
+  background-color: #363640;
+}
+.dx-datagrid-edit-popup-form {
+  background-color: #363640;
+}
+.dx-scrollable-content {
+  background-color: #363640;
+}
+.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+  background-color: #363640;
+  color:white;
+}
+
+.dx-icon .dx-icon-menu {
+  color: white;
 }

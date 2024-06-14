@@ -25,6 +25,7 @@
     "devextreme": "23.2.4",
     "devextreme-angular": "23.2.4",
     "devextreme-schematics": "^1.6.7",
+    "ngx-cookie-service": "^11.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
