@@ -5,17 +5,32 @@ export const navigation = [
     icon: 'home'
   },
   {
-    text: 'Examples',
-    icon: 'folder',
+    text: 'Clientes',
+    path: '/customers',
+    icon: 'user'
+  },
+  {
+    text: 'Produtos',
+    path: '/products',
+    icon: 'product'
+  },
+  {
+    text: 'Financeiro',
+    icon: 'money',
     items: [
       {
-        text: 'Profile',
-        path: '/profile'
+        text: 'Especies de Pagamento',
+        path: '/payment-method',
       },
       {
-        text: 'Products',
-        path: '/products'
-      }
+        text: 'Condições de Pagamento',
+        path: '/payment-condition'
+      },
     ]
-  }
+  },
+  {
+    text: 'Vendas',
+    path: '/sales',
+    icon: 'cart'
+  },
 ];

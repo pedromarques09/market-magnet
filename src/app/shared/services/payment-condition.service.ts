@@ -1,40 +1,56 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, of } from 'rxjs';
-
+import { ConditionModel } from '../models/conditionModel';
 
 const apiUrl = 'http://localhost:5046/api/';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaymentConditionService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http : HttpClient) { }
-
-  getPaymentConditionByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${apiUrl}PaymentCondition/user/${userId}`).pipe(
-      catchError(this.handleError<any[]>('getPaymentConditionByUserId', []))
-    );
+  getPaymentConditionByUserId(userId: string): Observable<ConditionModel[]> {
+    return this.http
+      .get<ConditionModel[]>(`${apiUrl}PaymentCondition/user/${userId}`)
+      .pipe(
+        catchError(
+          this.handleError<ConditionModel[]>('getPaymentConditionByUserId', [])
+        )
+      );
   }
 
-  createPaymentCondition(paymentCondition: any): Observable<any> {
-    return this.http.post<any>(`${apiUrl}PaymentCondition`, paymentCondition).pipe(
-      catchError(this.handleError<any>('createPaymentCondition'))
-    );
+  createPaymentCondition(
+    paymentCondition: ConditionModel
+  ): Observable<ConditionModel> {
+    return this.http
+      .post<ConditionModel>(`${apiUrl}PaymentCondition`, paymentCondition)
+      .pipe(
+        catchError(this.handleError<ConditionModel>('createPaymentCondition'))
+      );
   }
 
-  deletePaymentCondition(id: string): Observable<any> {
-    return this.http.delete<any>(`${apiUrl}PaymentCondition/${id}`).pipe(
-      catchError(this.handleError<any>('deletePaymentCondition'))
-    );
+  deletePaymentCondition(id: string): Observable<ConditionModel> {
+    return this.http
+      .delete<ConditionModel>(`${apiUrl}PaymentCondition/${id}`)
+      .pipe(
+        catchError(this.handleError<ConditionModel>('deletePaymentCondition'))
+      );
   }
 
-  updatePaymentCondition(paymentCondition: any): Observable<any> {
-    return this.http.put<any>(`${apiUrl}PaymentCondition/${paymentCondition._id}`, paymentCondition).pipe(
-      catchError(this.handleError<any>('updatePaymentCondition'))
-    );
-}
+  updatePaymentCondition(
+    paymentCondition: ConditionModel
+  ): Observable<ConditionModel> {
+    return this.http
+      .put<ConditionModel>(
+        `${apiUrl}PaymentCondition/${paymentCondition._id}`,
+        paymentCondition
+      )
+      .pipe(
+        catchError(this.handleError<ConditionModel>('updatePaymentCondition'))
+      );
+  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
@@ -42,6 +58,4 @@ export class PaymentConditionService {
       return of(result as T);
     };
   }
-
 }
-

@@ -2,19 +2,37 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { SideNavOuterToolbarModule, SideNavInnerToolbarModule, SingleCardModule } from './layouts';
-import { FooterModule, ResetPasswordFormModule, CreateAccountFormModule, ChangePasswordFormModule, LoginFormModule } from './shared/components';
-import { AuthService, ScreenService, AppInfoService, ProductService } from './shared/services';
+import {
+  SideNavOuterToolbarModule,
+  SideNavInnerToolbarModule,
+  SingleCardModule,
+} from './layouts';
+import {
+  FooterModule,
+  ResetPasswordFormModule,
+  CreateAccountFormModule,
+  ChangePasswordFormModule,
+  LoginFormModule,
+} from './shared/components';
+import {
+  AuthService,
+  ScreenService,
+  AppInfoService,
+  ProductService,
+  PaymentConditionService,
+  PaymentMethodService,
+  CustomerService,
+} from './shared/services';
 import { UnauthenticatedContentModule } from './unauthenticated-content';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
-import { CustomersComponent } from './pages/customers/customers.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { SaleFormModule } from './shared/components/sale-form/sale-form.component';
+import { AuthInterceptor } from './auth.interceptor';
+import { SaleService } from './shared/services/sale.service';
+import { UserStateService } from './shared/services/user-state.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    CustomersComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     SideNavOuterToolbarModule,
@@ -25,16 +43,23 @@ import { CustomersComponent } from './pages/customers/customers.component';
     CreateAccountFormModule,
     ChangePasswordFormModule,
     LoginFormModule,
+    SaleFormModule,
     UnauthenticatedContentModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     AuthService,
     ScreenService,
     AppInfoService,
-    ProductService
+    ProductService,
+    CustomerService,
+    SaleService,
+    PaymentConditionService,
+    PaymentMethodService,
+    UserStateService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

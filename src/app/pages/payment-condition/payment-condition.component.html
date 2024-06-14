@@ -1,6 +1,8 @@
-<h2 class="content-block">Condições de Pagamento</h2>
+<h2 class="content-block">CONDIÇÕES DE PAGAMENTO</h2>
 
-<dx-data-grid class="dx-card wide-card"
+<dx-data-grid
+  class="dx-card wide-card"
+  [searchPanel]="{ visible: true }"
   (onSelectionChanged)="selectedChanged($event)"
   id="grid"
   [dataSource]="dataSource"
@@ -9,17 +11,51 @@
   (onRowInserted)="onRowInserted($event)"
   (onRowUpdated)="onRowUpdated($event)"
   (onRowRemoved)="onRowRemoved($event)"
- >
- <dxo-selection mode="single"></dxo-selection>
- <dxo-paging [enabled]="false"></dxo-paging>
- <dxo-editing mode="popup">
-   <dxo-texts confirmDeleteMessage=""></dxo-texts>
-
- </dxo-editing>
+>
+  <dxo-selection mode="single"></dxo-selection>
+  <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+  <dxo-paging [pageSize]="10"> </dxo-paging>
+  <dxo-pager [visible]="true" [showPageSizeSelector]="true"> </dxo-pager>
+  <dxo-editing mode="popup">
+    <dxi-item dataField="descricao">
+      <dxi-validation-rule
+        type="required"
+        message="Descrição é obrigatória"
+      ></dxi-validation-rule>
+      <dxo-label text="Descrição"></dxo-label>
+    </dxi-item>
+    <dxi-item dataField="numeroParcela" type="numeric">
+      <dxi-validation-rule
+        type="required"
+        message="Numero de Parcelas é obrigatório"
+      ></dxi-validation-rule>
+      <dxo-label text="Numero de Parcelas"></dxo-label>
+    </dxi-item>
+    <dxi-item dataField="diasEntrada">
+      <dxi-validation-rule
+        type="required"
+        message="Dias de Entrada é obrigatório"
+      ></dxi-validation-rule>
+      <dxo-label text="Dias de Entrada"></dxo-label>
+    </dxi-item>
+    <dxi-item dataField="diasIntervalo">
+      <dxi-validation-rule
+        type="required"
+        message="Dias de Intervalo é obrigatório"
+      ></dxi-validation-rule>
+      <dxo-label text="Dias de Intervalo"></dxo-label>
+    </dxi-item>
+  </dxo-editing>
   <dxi-column dataField="descricao" caption="Descrição"></dxi-column>
-  <dxi-column dataField="numeroParcela" caption="Numero de Parcelas"></dxi-column>
+  <dxi-column
+    dataField="numeroParcela"
+    caption="Numero de Parcelas"
+  ></dxi-column>
   <dxi-column dataField="diasEntrada" caption="Dias de Entrada"></dxi-column>
-  <dxi-column dataField="diasIntervalo" caption="Dias de Intervalo"></dxi-column>
+  <dxi-column
+    dataField="diasIntervalo"
+    caption="Dias de Intervalo"
+  ></dxi-column>
 </dx-data-grid>
 
 <dx-speed-dial-action

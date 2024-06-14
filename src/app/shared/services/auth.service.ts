@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { UserModel } from '../models/userModel';
 
 export interface IUser {
   email: string;
@@ -8,15 +9,10 @@ export interface IUser {
 }
 
 const defaultPath = '/';
-const defaultUser = {
-  email: 'sandra@example.com',
-  avatarUrl: 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/06.png'
-};
-
+const apiUrl = 'http://localhost:5046/api/';
 @Injectable()
 export class AuthService {
   private _user: any = null;
-  private apiUrl = 'http://localhost:5046/api/';
   get loggedIn(): boolean {
     return !!this._user;
   }
@@ -26,40 +22,62 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   async logIn(email: string, password: string) {
     try {
-      const response = await this.http.post<any>(this.apiUrl + 'Login', { email, password }).toPromise();
+      const response = await this.http
+        .post<any>(apiUrl + 'Login', { email, password })
+        .toPromise();
+      localStorage.setItem('token', response.token);
       this._user = response.user;
-      this.router.navigate(['/home']); // Redireciona para a página adequada após o login
+      this.router.navigate(['/home']);
       return { isOk: true, data: this._user };
     } catch (error) {
-      return { isOk: false, message: "Email ou Senha invalido" };
+      return { isOk: false, message: 'Email ou Senha invalido' };
     }
   }
-
 
   async getUser() {
     return { isOk: true, data: this._user };
   }
 
-  async createAccount(name: string, email: string, password: string) {
+  async getUserById(id: string) {
     try {
-      console.log(name, email, password)
-      // Send request
-      const response = await this.http.post<any>(this.apiUrl + 'User', { name, email, password }).toPromise();
-      this.router.navigate(['/login-form']);
+      const user = await this.http
+        .get<UserModel>(`${apiUrl}User/${id}`)
+        .toPromise();
       return {
-        isOk: true
+        isOk: true,
+        data: user,
       };
-    }
-    catch {
+    } catch {
       return {
         isOk: false,
-        message: "Failed to create account"
+        message: 'Failed to get user',
       };
     }
+  }
+
+  async createAccount(name: string, email: string, password: string) {
+    try {
+      await this.http
+        .post<UserModel>(apiUrl + 'User', { name, email, password })
+        .toPromise();
+      this.router.navigate(['/login-form']);
+      return {
+        isOk: true,
+      };
+    } catch {
+      return {
+        isOk: false,
+        message: 'Failed to create account',
+      };
+    }
+  }
+  async logOut() {
+    this._user = null;
+    this.router.navigate(['/login-form']);
   }
 
   async changePassword(email: string, recoveryCode: string) {
@@ -67,14 +85,13 @@ export class AuthService {
       // Send request
 
       return {
-        isOk: true
+        isOk: true,
       };
-    }
-    catch {
+    } catch {
       return {
         isOk: false,
-        message: "Failed to change password"
-      }
+        message: 'Failed to change password',
+      };
     }
   }
 
@@ -83,26 +100,36 @@ export class AuthService {
       // Send request
 
       return {
-        isOk: true
+        isOk: true,
       };
-    }
-    catch {
+    } catch {
       return {
         isOk: false,
-        message: "Failed to reset password"
+        message: 'Failed to reset password',
       };
     }
   }
 
-  async logOut() {
-    this._user = null;
-    this.router.navigate(['/login-form']);
+  async updateUser(user: UserModel) {
+    try {
+      await this.http
+        .put<UserModel>(`${apiUrl}User/${this._user._id}`, user)
+        .toPromise();
+      return {
+        isOk: true,
+      };
+    } catch {
+      return {
+        isOk: false,
+        message: 'Failed to update user',
+      };
+    }
   }
 }
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const isLoggedIn = this.authService.loggedIn;
@@ -110,7 +137,7 @@ export class AuthGuardService implements CanActivate {
       'login-form',
       'reset-password',
       'create-account',
-      'change-password/:recoveryCode'
+      'change-password/:recoveryCode',
     ].includes(route.routeConfig?.path || defaultPath);
 
     if (isLoggedIn && isAuthForm) {
@@ -124,7 +151,8 @@ export class AuthGuardService implements CanActivate {
     }
 
     if (isLoggedIn) {
-      this.authService.lastAuthenticatedPath = route.routeConfig?.path || defaultPath;
+      this.authService.lastAuthenticatedPath =
+        route.routeConfig?.path || defaultPath;
     }
 
     return isLoggedIn || isAuthForm;

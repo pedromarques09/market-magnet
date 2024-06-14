@@ -1,29 +1,34 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
+import { MethodModel } from 'src/app/shared/models/methodModel';
 import { AuthService } from 'src/app/shared/services';
 import { PaymentMethodService } from 'src/app/shared/services/payment-method.service';
 
 @Component({
   selector: 'app-payment-method',
   templateUrl: './payment-method.component.html',
-  styleUrls: ['./payment-method.component.scss']
+  styleUrls: ['./payment-method.component.scss'],
 })
 export class PaymentMethodComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: false }) grid: any;
   userId!: string;
-  method: any = {
-    _id: '',
-    descricao: '',
-    userId: ''
-    }
-  dataSource: any;
+  method: MethodModel = this.createEmptyMethod();
+  dataSource: MethodModel[] = [];
   selectedRowIndex: number = -1;
 
   constructor(
     private methodService: PaymentMethodService,
     private authService: AuthService
-  ) { }
+  ) {}
+
+  createEmptyMethod() {
+    return {
+      _id: '',
+      descricao: '',
+      userId: '',
+    };
+  }
 
   async ngOnInit(): Promise<void> {
     this.userId = (await this.authService.getUser()).data._id;
@@ -32,7 +37,9 @@ export class PaymentMethodComponent implements OnInit {
 
   async loadData() {
     try {
-      this.dataSource = await this.methodService.getPaymentMethodByUserId(this.userId).toPromise();
+      this.dataSource = (await this.methodService
+        .getPaymentMethodByUserId(this.userId)
+        .toPromise()) as MethodModel[];
     } catch (error) {
       console.error('Erro ao carregar as Especies de Pagamento:', error);
     }
@@ -53,15 +60,14 @@ export class PaymentMethodComponent implements OnInit {
     this.grid.instance.deselectAll();
   }
 
-  async onRowInserted(event: any) {
+  async onRowInserted(event: DxDataGridTypes.RowInsertedEvent) {
     try {
       const newMethod = event.data;
-      this.method = {       
-        descricao: newMethod.descricao    ,
-        userId: this.userId
-        },
-      
-      await this.methodService.createPaymentMethod(this.method).toPromise();
+      (this.method = {
+        descricao: newMethod.descricao,
+        userId: this.userId,
+      }),
+        await this.methodService.createPaymentMethod(this.method).toPromise();
       console.log('Especie adicionada:', newMethod);
       this.loadData(); // Recarregar os dados para refletir a nova adição
     } catch (error) {
@@ -69,13 +75,13 @@ export class PaymentMethodComponent implements OnInit {
     }
   }
 
-  async onRowUpdated(event: any) {
+  async onRowUpdated(event: DxDataGridTypes.RowUpdatedEvent) {
     try {
       const updateMethod = event.data;
       this.method = {
         _id: updateMethod._id,
         userId: this.userId,
-        descricao: updateMethod.descricao
+        descricao: updateMethod.descricao,
       };
       await this.methodService.updatePaymentMethod(this.method).toPromise();
       console.log('Especie de Pagamento atualizada:', updateMethod);
@@ -85,10 +91,12 @@ export class PaymentMethodComponent implements OnInit {
     }
   }
 
-  async onRowRemoved(event: any) {
+  async onRowRemoved(event: DxDataGridTypes.RowRemovedEvent) {
     try {
       const removedMethod = event.data;
-      await this.methodService.deletePaymentMethod(removedMethod._id).toPromise();
+      await this.methodService
+        .deletePaymentMethod(removedMethod._id)
+        .toPromise();
       console.log('Especie de Pagamento removida:', removedMethod);
       this.loadData(); // Recarregar os dados para refletir a remoção
     } catch (error) {
@@ -100,4 +108,3 @@ export class PaymentMethodComponent implements OnInit {
     this.selectedRowIndex = e.component.getRowIndexByKey(e.selectedRowKeys[0]);
   }
 }
-

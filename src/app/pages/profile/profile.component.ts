@@ -1,33 +1,115 @@
-import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { ValidationCallbackData } from 'devextreme/common';
+import { UserModel } from 'src/app/shared/models/userModel';
+import { AuthService } from 'src/app/shared/services';
+import { UserStateService } from 'src/app/shared/services/user-state.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DxFormComponent } from 'devextreme-angular/ui/form';
+import { DxTextBoxTypes } from 'devextreme-angular/ui/text-box';
+
+type EditorOptions = DxTextBoxTypes.Properties;
 
 @Component({
   templateUrl: 'profile.component.html',
-  styleUrls: [ './profile.component.scss' ]
+  styleUrls: ['./profile.component.scss'],
 })
+export class ProfileComponent implements OnInit {
+  @ViewChild(DxFormComponent, { static: false }) form!: DxFormComponent;
+  colCountByScreen: any;
+  user!: UserModel;
+  userId!: string;
+  userApi!: any;
 
-export class ProfileComponent {
-  employee: any;
-  colCountByScreen: object;
+  passwordEditorOptions: EditorOptions = {
+    mode: 'password',
+    valueChangeEvent: 'keyup',
+    buttons: [
+      {
+        name: 'password',
+        location: 'after',
+        options: {
+          icon: 'eyeopen',
+          stylingMode: 'text',
+          onClick: () => this.changePasswordMode('password'),
+        },
+      },
+    ],
+  };
 
-  constructor() {
-    this.employee = {
-      ID: 7,
-      FirstName: 'Sandra',
-      LastName: 'Johnson',
-      Prefix: 'Mrs.',
-      Position: 'Controller',
-      Picture: 'images/employees/06.png',
-      BirthDate: new Date('1974/11/5'),
-      HireDate: new Date('2005/05/11'),
-      /* tslint:disable-next-line:max-line-length */
-      Notes: 'Sandra is a CPA and has been our controller since 2008. She loves to interact with staff so if you`ve not met her, be certain to say hi.\r\n\r\nSandra has 2 daughters both of whom are accomplished gymnasts.',
-      Address: '4600 N Virginia Rd.'
-    };
+  confirmPasswordEditorOptions: EditorOptions = {
+    mode: 'password',
+    valueChangeEvent: 'keyup',
+    buttons: [
+      {
+        name: 'password',
+        location: 'after',
+        options: {
+          icon: 'eyeopen',
+          stylingMode: 'text',
+          onClick: () => this.changePasswordMode('confirmPassword'),
+        },
+      },
+    ],
+  };
+
+  constructor(
+    private authService: AuthService,
+    private userStateService: UserStateService,
+    private router: Router
+  ) {
     this.colCountByScreen = {
       xs: 1,
       sm: 2,
       md: 3,
-      lg: 4
+      lg: 4,
     };
+  }
+  editName = false;
+  editPassword = false;
+  showPassword = false;
+
+  async ngOnInit() {
+    this.userId = (await this.authService.getUser())?.data._id;
+    this.loadUser();
+  }
+
+  async loadUser() {
+    this.userApi = (await this.authService.getUserById(this.userId)).data;
+    this.user = {
+      name: this.userApi.name,
+      email: this.userApi.email,
+      password: this.userApi.password,
+    };
+  }
+
+  changePasswordMode = (name: string) => {
+    let editor = this.form.instance.getEditor(name);
+    editor?.option(
+      'mode',
+      editor.option('mode') === 'text' ? 'password' : 'text'
+    );
+  };
+
+  changePassword = () => {
+    this.editPassword = !this.editPassword;
+  };
+
+  confirmPassword = (e: ValidationCallbackData) => {
+    return e.value === this.user.password;
+  };
+
+  onSubmit(event: Event) {
+    event.preventDefault();
+    this.updateUser();
+  }
+
+  async updateUser() {
+    const response = await this.authService.updateUser(this.user);
+    if (response.isOk) {
+      this.userStateService.updateUserName(this.user.name);
+      this.router.navigate(['/home']);
+    } else {
+      console.log(response.message);
+    }
   }
 }

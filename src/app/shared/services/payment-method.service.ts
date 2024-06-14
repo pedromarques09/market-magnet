@@ -2,38 +2,45 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { MethodModel } from '../models/methodModel';
 
 const apiUrl = 'http://localhost:5046/api/';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaymentMethodService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http : HttpClient) { }
-
-  getPaymentMethodByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${apiUrl}PaymentMethod/user/${userId}`).pipe(
-      catchError(this.handleError<any[]>('getPaymentMethodByUserId', []))
-    );
+  getPaymentMethodByUserId(userId: string): Observable<MethodModel[]> {
+    return this.http
+      .get<MethodModel[]>(`${apiUrl}PaymentMethod/user/${userId}`)
+      .pipe(
+        catchError(
+          this.handleError<MethodModel[]>('getPaymentMethodByUserId', [])
+        )
+      );
   }
 
-  createPaymentMethod(paymentMethod: any): Observable<any> {
-    return this.http.post<any>(`${apiUrl}PaymentMethod`, paymentMethod).pipe(
-      catchError(this.handleError<any>('createPaymentMethod'))
-    );
+  createPaymentMethod(paymentMethod: MethodModel): Observable<MethodModel> {
+    return this.http
+      .post<MethodModel>(`${apiUrl}PaymentMethod`, paymentMethod)
+      .pipe(catchError(this.handleError<MethodModel>('createPaymentMethod')));
   }
 
-  deletePaymentMethod(id: string): Observable<any> {
-    return this.http.delete<any>(`${apiUrl}PaymentMethod/${id}`).pipe(
-      catchError(this.handleError<any>('deletePaymentMethod'))
-    );
+  deletePaymentMethod(id: string): Observable<MethodModel> {
+    return this.http
+      .delete<MethodModel>(`${apiUrl}PaymentMethod/${id}`)
+      .pipe(catchError(this.handleError<MethodModel>('deletePaymentMethod')));
   }
 
-  updatePaymentMethod(paymentMethod: any): Observable<any> {
-    return this.http.put<any>(`${apiUrl}PaymentMethod/${paymentMethod._id}`, paymentMethod).pipe(
-      catchError(this.handleError<any>('updatePaymentMethod'))
-    );
+  updatePaymentMethod(paymentMethod: MethodModel): Observable<MethodModel> {
+    return this.http
+      .put<MethodModel>(
+        `${apiUrl}PaymentMethod/${paymentMethod._id}`,
+        paymentMethod
+      )
+      .pipe(catchError(this.handleError<MethodModel>('updatePaymentMethod')));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

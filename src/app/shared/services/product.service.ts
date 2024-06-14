@@ -2,35 +2,55 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ProductModel } from '../models/productModel';
+import { PayloadModel } from '../models/saleModel';
 
 const apiUrl = 'http://localhost:5046/api/';
 
 @Injectable()
 export class ProductService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getProductByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${apiUrl}Product/user/${userId}`).pipe(
-      catchError(this.handleError<any[]>('getProductByUserId', []))
-    );
+  getProductByUserId(userId: string): Observable<ProductModel[]> {
+    return this.http
+      .get<ProductModel[]>(`${apiUrl}Product/user/${userId}`)
+      .pipe(
+        catchError(this.handleError<ProductModel[]>('getProductByUserId', []))
+      );
   }
 
-  createProduct(product: any): Observable<any> {
-    return this.http.post<any>(`${apiUrl}Product`, product).pipe(
-      catchError(this.handleError<any>('createProduct'))
-    );
+  getLastProduct(userId: string): Observable<ProductModel> {
+    return this.http
+      .get<ProductModel>(`${apiUrl}Product/user/last/${userId}`)
+      .pipe(catchError(this.handleError<ProductModel>('getLastProduct')));
   }
 
-  deleteProduct(id: string): Observable<any> {
-    return this.http.delete<any>(`${apiUrl}Product/${id}`).pipe(
-      catchError(this.handleError<any>('deleteProduct'))
-    );
+  createProduct(product: ProductModel): Observable<ProductModel> {
+    return this.http
+      .post<ProductModel>(`${apiUrl}Product`, product)
+      .pipe(catchError(this.handleError<ProductModel>('createProduct')));
   }
 
-  updateProduct(product: any): Observable<any> {
-    return this.http.put<any>(`${apiUrl}Product/${product._id}`, product).pipe(
-      catchError(this.handleError<any>('updateProduct'))
-    );
+  updateStock(payload: PayloadModel): Observable<ProductModel[]> {
+    return this.http
+      .put<ProductModel[]>(`${apiUrl}Product/quantity`, payload)
+      .pipe(
+        catchError(
+          this.handleError<ProductModel[]>('updateProductQuantity', [])
+        )
+      );
+  }
+
+  deleteProduct(id: string): Observable<ProductModel> {
+    return this.http
+      .delete<ProductModel>(`${apiUrl}Product/${id}`)
+      .pipe(catchError(this.handleError<ProductModel>('deleteProduct')));
+  }
+
+  updateProduct(product: ProductModel): Observable<ProductModel> {
+    return this.http
+      .put<ProductModel>(`${apiUrl}Product/${product._id}`, product)
+      .pipe(catchError(this.handleError<ProductModel>('updateProduct')));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

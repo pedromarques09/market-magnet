@@ -1,49 +1,58 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
+import { ValidationCallbackData } from 'devextreme/common';
+import { CustomerModel } from 'src/app/shared/models/customerModel';
 import { AuthService } from 'src/app/shared/services';
 import { CustomerService } from 'src/app/shared/services/customer.service';
 
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.scss']
+  styleUrls: ['./customers.component.scss'],
 })
 export class CustomersComponent implements OnInit {
-  @ViewChild(DxDataGridComponent, { static: false }) grid: any;
+  @ViewChild(DxDataGridComponent, { static: false }) grid!: DxDataGridComponent;
   userId!: string;
-  customer: any = {
-    codigo: '',
-    cpfCnpj: '',
-    rgIe: '',
-    tipoPessoa: '',
-    nomeRazaoSocial: '',
-    apelidoNomeFantasia: '',
-    endereco: {
-      Cep: '',
-      Logradouro: '',
-      Numero: '',
-      PontoReferencia: '',
-      Bairro: '',
-      Cidade: ''
-    }
-  };
-  dataSource: any;
+  customer: CustomerModel = this.createEmptyCustomer();
+  tipoPessoaDataSource = [{ descricao: 'Fisica' }, { descricao: 'Juridica' }];
+  dataSource: CustomerModel[] = [];
   selectedRowIndex: number = -1;
 
   constructor(
     private customerService: CustomerService,
     private authService: AuthService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.userId = (await this.authService.getUser()).data._id;
     this.loadData();
   }
 
+  createEmptyCustomer() {
+    return {
+      codigo: 0,
+      cpfCnpj: '',
+      rgIe: '',
+      tipoPessoa: '',
+      nomeRazaoSocial: '',
+      apelidoNomeFantasia: '',
+      endereco: {
+        cep: '',
+        logradouro: '',
+        numero: '',
+        pontoReferencia: '',
+        bairro: '',
+        cidade: '',
+      },
+    };
+  }
+
   async loadData() {
     try {
-      this.dataSource = await this.customerService.getCustomerByUserId(this.userId).toPromise();
+      this.dataSource = (await this.customerService
+        .getCustomerByUserId(this.userId)
+        .toPromise()) as CustomerModel[];
     } catch (error) {
       console.error('Erro ao carregar os clientes:', error);
     }
@@ -52,6 +61,7 @@ export class CustomersComponent implements OnInit {
   async addCustomer() {
     this.grid.instance.addRow();
     this.grid.instance.deselectAll();
+    this.generateCode();
   }
 
   async editCustomer() {
@@ -64,40 +74,53 @@ export class CustomersComponent implements OnInit {
     this.grid.instance.deselectAll();
   }
 
-  async onRowInserted(event: any) {
+  async generateCode() {
+    try {
+      const lastCostumer = await this.customerService
+        .getLastCustomer(this.userId!)
+        .toPromise();
+      this.customer.codigo = lastCostumer ? lastCostumer.codigo + 1 : 1;
+    } catch (error) {
+      console.error('Erro ao gerar o código do cliente:', error);
+    }
+  }
+
+  controlCpfCnpj(e: ValidationCallbackData) {
+    return e.value.length == 11 || e.value.length == 14;
+  }
+
+  async onRowInserted(event: DxDataGridTypes.RowInsertedEvent) {
     try {
       const newCustomer = event.data;
       this.customer = {
-        codigo: newCustomer.codigo,
+        codigo: this.customer.codigo,
         cpfCnpj: newCustomer.cpfCnpj,
         rgIe: newCustomer.rgIe,
         tipoPessoa: newCustomer.tipoPessoa,
         nomeRazaoSocial: newCustomer.nomeRazaoSocial,
         apelidoNomeFantasia: newCustomer.apelidoNomeFantasia,
         endereco: {
-          Cep: newCustomer.endereco.Cep,
-          Logradouro: newCustomer.endereco.Logradouro,
-          Numero: newCustomer.endereco.Numero,
-          PontoReferencia: newCustomer.endereco.PontoReferencia,
-          Bairro: newCustomer.endereco.Bairro,
-          Cidade: newCustomer.endereco.Cidade
+          cep: newCustomer.endereco.cep,
+          logradouro: newCustomer.endereco.logradouro,
+          numero: newCustomer.endereco.numero,
+          pontoReferencia: newCustomer.endereco.pontoReferencia,
+          bairro: newCustomer.endereco.bairro,
+          cidade: newCustomer.endereco.cidade,
         },
-        userId: this.userId
+        userId: this.userId,
       };
       await this.customerService.createCustomer(this.customer).toPromise();
-      console.log('Cliente adicionado:', newCustomer);
-      this.loadData(); // Recarregar os dados para refletir a nova adição
+      this.loadData();
     } catch (error) {
       console.error('Erro ao adicionar o cliente:', error);
     }
   }
 
-  async onRowUpdated(event: any) {
+  async onRowUpdated(event: DxDataGridTypes.RowUpdatedEvent) {
     try {
       const updateCustomer = event.data;
       this.customer = {
         _id: updateCustomer._id,
-        userId: this.userId,
         codigo: updateCustomer.codigo,
         cpfCnpj: updateCustomer.cpfCnpj,
         rgIe: updateCustomer.rgIe,
@@ -105,28 +128,29 @@ export class CustomersComponent implements OnInit {
         nomeRazaoSocial: updateCustomer.nomeRazaoSocial,
         apelidoNomeFantasia: updateCustomer.apelidoNomeFantasia,
         endereco: {
-          Cep: updateCustomer.endereco.Cep,
-          Logradouro: updateCustomer.endereco.Logradouro,
-          Numero: updateCustomer.endereco.Numero,
-          PontoReferencia: updateCustomer.endereco.PontoReferencia,
-          Bairro: updateCustomer.endereco.Bairro,
-          Cidade: updateCustomer.endereco.Cidade
-        }
+          cep: updateCustomer.endereco.cep,
+          logradouro: updateCustomer.endereco.logradouro,
+          numero: updateCustomer.endereco.numero,
+          pontoReferencia: updateCustomer.endereco.pontoReferencia,
+          bairro: updateCustomer.endereco.bairro,
+          cidade: updateCustomer.endereco.cidade,
+        },
+        userId: this.userId,
       };
       await this.customerService.updateCustomer(updateCustomer).toPromise();
-      console.log('Cliente atualizado:', updateCustomer);
-      this.loadData(); // Recarregar os dados para refletir a atualização
+      this.loadData();
     } catch (error) {
       console.error('Erro ao atualizar o cliente:', error);
     }
   }
 
-  async onRowRemoved(event: any) {
+  async onRowRemoved(event: DxDataGridTypes.RowRemovedEvent) {
     try {
       const removedCustomer = event.data;
-      await this.customerService.deleteCustomer(removedCustomer._id).toPromise();
-      console.log('Cliente removido:', removedCustomer);
-      this.loadData(); // Recarregar os dados para refletir a remoção
+      await this.customerService
+        .deleteCustomer(removedCustomer._id)
+        .toPromise();
+      this.loadData();
     } catch (error) {
       console.error('Erro ao remover o cliente:', error);
     }

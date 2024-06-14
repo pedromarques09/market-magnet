@@ -1,23 +1,30 @@
-<h2 class="content-block">Especie de Pagamento</h2>
+<h2 class="content-block">ESPÉCIE DE PAGAMENTO</h2>
 
-<dx-data-grid class="dx-card wide-card"
+<dx-data-grid
+  class="dx-card wide-card"
+  [searchPanel]="{ visible: true }"
   (onSelectionChanged)="selectedChanged($event)"
   id="grid"
   [dataSource]="dataSource"
   [showBorders]="false"
-  [columnHidingEnabled]="true"
   (onRowInserted)="onRowInserted($event)"
   (onRowUpdated)="onRowUpdated($event)"
   (onRowRemoved)="onRowRemoved($event)"
- >
- <dxo-selection mode="single"></dxo-selection>
- <dxo-paging [enabled]="false"></dxo-paging>
- <dxo-editing mode="popup">
-   <dxo-texts confirmDeleteMessage=""></dxo-texts>
- </dxo-editing>
-
+  [selection]="{ mode: 'single' }"
+>
+  <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+  <dxo-paging [pageSize]="10"> </dxo-paging>
+  <dxo-pager [visible]="true" [showPageSizeSelector]="true"> </dxo-pager>
+  <dxo-editing mode="popup">
+    <dxi-item dataField="descricao">
+      <dxi-validation-rule
+        type="required"
+        message="Descrição é obrigatória"
+      ></dxi-validation-rule>
+      <dxo-label text="Descrição"></dxo-label>
+    </dxi-item>
+  </dxo-editing>
   <dxi-column dataField="descricao" caption="Descrição"></dxi-column>
-
 </dx-data-grid>
 
 <dx-speed-dial-action

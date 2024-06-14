@@ -1,32 +1,37 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
+import { ConditionModel } from 'src/app/shared/models/conditionModel';
 import { AuthService } from 'src/app/shared/services';
 import { PaymentConditionService } from 'src/app/shared/services/payment-condition.service';
 
 @Component({
   selector: 'app-payment-condition',
   templateUrl: './payment-condition.component.html',
-  styleUrls: ['./payment-condition.component.scss']
+  styleUrls: ['./payment-condition.component.scss'],
 })
 export class PaymentConditionComponent implements OnInit {
-  @ViewChild(DxDataGridComponent, { static: false }) grid: any;
+  @ViewChild(DxDataGridComponent, { static: false }) grid!: DxDataGridComponent;
   userId!: string;
-  condition: any = {
-    _id : '',
-    descricao: '',
-    userId: '',
-    numeroParcela: 0,
-    diasIntervalo: 0,
-    diasEntrada : 0,
-    }
-  dataSource: any;
+  condition: ConditionModel = this.createEmptyCondition();
+  dataSource: ConditionModel[] = [];
   selectedRowIndex: number = -1;
 
   constructor(
     private conditionService: PaymentConditionService,
     private authService: AuthService
-  ) { }
+  ) {}
+
+  createEmptyCondition() {
+    return {
+      _id: '',
+      descricao: '',
+      numeroParcela: 0,
+      diasIntervalo: 0,
+      diasEntrada: 0,
+      userId: '',
+    };
+  }
 
   async ngOnInit(): Promise<void> {
     this.userId = (await this.authService.getUser()).data._id;
@@ -35,7 +40,9 @@ export class PaymentConditionComponent implements OnInit {
 
   async loadData() {
     try {
-      this.dataSource = await this.conditionService.getPaymentConditionByUserId(this.userId).toPromise();
+      this.dataSource = (await this.conditionService
+        .getPaymentConditionByUserId(this.userId)
+        .toPromise()) as ConditionModel[];
     } catch (error) {
       console.error('Erro ao carregar as Condiçãos de Pagamento:', error);
     }
@@ -56,26 +63,27 @@ export class PaymentConditionComponent implements OnInit {
     this.grid.instance.deselectAll();
   }
 
-  async onRowInserted(event: any) {
+  async onRowInserted(event: DxDataGridTypes.RowInsertedEvent) {
     try {
       const newCondition = event.data;
-      this.condition = {       
+      (this.condition = {
         descricao: newCondition.descricao,
         userId: this.userId,
         numeroParcela: newCondition.numeroParcela,
         diasIntervalo: newCondition.diasIntervalo,
         diasEntrada: newCondition.diasEntrada,
-        },
-      
-      await this.conditionService.createPaymentCondition(this.condition).toPromise();
+      }),
+        await this.conditionService
+          .createPaymentCondition(this.condition)
+          .toPromise();
       console.log('Condição adicionada:', newCondition);
-      this.loadData(); // Recarregar os dados para refletir a nova adição
+      this.loadData();
     } catch (error) {
       console.error('Erro ao adicionar a Condição de Pagamento:', error);
     }
   }
 
-  async onRowUpdated(event: any) {
+  async onRowUpdated(event: DxDataGridTypes.RowUpdatedEvent) {
     try {
       const updateCondition = event.data;
       this.condition = {
@@ -86,20 +94,24 @@ export class PaymentConditionComponent implements OnInit {
         diasIntervalo: updateCondition.diasIntervalo,
         diasEntrada: updateCondition.diasEntrada,
       };
-      await this.conditionService.updatePaymentCondition(this.condition).toPromise();
+      await this.conditionService
+        .updatePaymentCondition(this.condition)
+        .toPromise();
       console.log('Condição de Pagamento atualizada:', updateCondition);
-      this.loadData(); // Recarregar os dados para refletir a atualização
+      this.loadData();
     } catch (error) {
       console.error('Erro ao atualizar a Condição de Pagamento:', error);
     }
   }
 
-  async onRowRemoved(event: any) {
+  async onRowRemoved(event: DxDataGridTypes.RowRemovedEvent) {
     try {
       const removedCondition = event.data;
-      await this.conditionService.deletePaymentCondition(removedCondition._id).toPromise();
+      await this.conditionService
+        .deletePaymentCondition(removedCondition._id)
+        .toPromise();
       console.log('Condição de Pagamento removida:', removedCondition);
-      this.loadData(); // Recarregar os dados para refletir a remoção
+      this.loadData();
     } catch (error) {
       console.error('Erro ao remover a Condição de Pagamento:', error);
     }
@@ -109,4 +121,3 @@ export class PaymentConditionComponent implements OnInit {
     this.selectedRowIndex = e.component.getRowIndexByKey(e.selectedRowKeys[0]);
   }
 }
-

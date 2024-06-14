@@ -2,39 +2,46 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { CustomerModel } from '../models/customerModel';
 
 const apiUrl = 'http://localhost:5046/api/';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomerService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getCustomerByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${apiUrl}Customer/user/${userId}`).pipe(
-      catchError(this.handleError<any[]>('getCustomerByUserId', []))
-    );
+  getCustomerByUserId(userId: string): Observable<CustomerModel[]> {
+    return this.http
+      .get<CustomerModel[]>(`${apiUrl}Customer/user/${userId}`)
+      .pipe(
+        catchError(this.handleError<CustomerModel[]>('getCustomerByUserId', []))
+      );
   }
 
-  createCustomer(customer: any): Observable<any> {
-    return this.http.post<any>(`${apiUrl}Customer`, customer).pipe(
-      catchError(this.handleError<any>('createCustomer'))
-    );
+  getLastCustomer(userId: string): Observable<CustomerModel> {
+    return this.http
+      .get<CustomerModel>(`${apiUrl}Customer/user/last/${userId}`)
+      .pipe(catchError(this.handleError<CustomerModel>('getLastCustomer')));
   }
 
-  deleteCustomer(id: string): Observable<any> {
-    return this.http.delete<any>(`${apiUrl}Customer/${id}`).pipe(
-      catchError(this.handleError<any>('deleteCustomer'))
-    );
+  createCustomer(customer: CustomerModel): Observable<CustomerModel> {
+    return this.http
+      .post<CustomerModel>(`${apiUrl}Customer`, customer)
+      .pipe(catchError(this.handleError<CustomerModel>('createCustomer')));
   }
 
-  updateCustomer(customer: any): Observable<any> {
-    return this.http.put<any>(`${apiUrl}Customer/${customer._id}`, customer).pipe(
-      catchError(this.handleError<any>('updateCustomer'))
-    );
+  deleteCustomer(id: string): Observable<CustomerModel> {
+    return this.http
+      .delete<CustomerModel>(`${apiUrl}Customer/${id}`)
+      .pipe(catchError(this.handleError<CustomerModel>('deleteCustomer')));
+  }
+
+  updateCustomer(customer: CustomerModel): Observable<CustomerModel> {
+    return this.http
+      .put<CustomerModel>(`${apiUrl}Customer/${customer._id}`, customer)
+      .pipe(catchError(this.handleError<CustomerModel>('updateCustomer')));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
@@ -44,4 +51,3 @@ export class CustomerService {
     };
   }
 }
-
